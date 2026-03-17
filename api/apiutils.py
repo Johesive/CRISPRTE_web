@@ -22,31 +22,20 @@ DB_MAP = {
 }
 
 te_info = {ga: {} for ga in DB_MAP}
-
-filemap = lambda x: os.path.join(settings.BASE_DIR, "api/" "refData", x)
-with open(filemap("te2int-hg38.pkl"), "rb") as f:
-    te_info["hg38"]["te2int"] = pickle.load(f)
-    te_info["hg38"]["int2te"] = {i: j for j,
-                                 i in te_info["hg38"]["te2int"].items()}
-
-with open(filemap("TE-copy-hg38.pkl"), "rb") as f:
-    te_info["hg38"]["te_info"] = pickle.load(f)
-
-with open(filemap("te2int-mm10.pkl"), "rb") as f:
-    te_info["mm10"]["te2int"] = pickle.load(f)
-    te_info["mm10"]["int2te"] = {i: j for j,
-                                 i in te_info["mm10"]["te2int"].items()}
-
-with open(filemap("TE-copy-mm10.pkl"), "rb") as f:
-    te_info["mm10"]["te_info"] = pickle.load(f)
-
 combination_gids = {}
 
-with open(filemap("hg38_combination_gids.json")) as f:
-    combination_gids["hg38"] = json.load(f)
+filemap = lambda x: os.path.join(settings.BASE_DIR, "api/" "refData", x)
 
-with open(filemap("mm10_combination_gids.json")) as f:
-    combination_gids["mm10"] = json.load(f)
+for ga in DB_MAP.keys():
+    with open(filemap(f"te2int-{ga}.pkl"), "rb") as f:
+        te_info[ga]["te2int"] = pickle.load(f)
+    te_info[ga]["int2te"] = {i: j for j, i in te_info[ga]["te2int"].items()}
+
+    with open(filemap(f"TE-copy-{ga}.pkl"), "rb") as f:
+        te_info[ga]["te_info"] = pickle.load(f)
+
+    with open(filemap(f"{ga}_combination_gids.json")) as f:
+        combination_gids[ga] = json.load(f)
 
 # END In-memory data
 
